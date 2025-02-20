@@ -3,20 +3,36 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, GoogleAuthProvider } from "../Auth/firebase.init";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const googleProvider = new GoogleAuthProvider();
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log("User logged in successfully!");
+    } catch (error: any) {
+      console.error("Error logging in:", error.message);
+      alert(error.message);
+    }
   };
 
-  const handleGoogleSignUp = () => {
-    console.log("Google Sign Up");
+  const handleGoogleSignUp = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log("Google Sign-In Successful:", user);
+    } catch (error: any) {
+      console.error("Error during Google Sign-In:", error.message);
+      alert(error.message);
+    }
   };
 
   return (
@@ -35,7 +51,6 @@ const LoginPage: React.FC = () => {
               required
             />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <div className="relative">
@@ -60,12 +75,10 @@ const LoginPage: React.FC = () => {
               </button>
             </div>
           </div>
-
           <Button type="submit" className="w-full">
             Login
           </Button>
         </form>
-
         <Button
           variant="outline"
           className="w-full"

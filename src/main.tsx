@@ -5,6 +5,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./pages/Layout";
 import LoginPage from "./pages/LoginPage";
 import Home from "./pages/Home";
+import { AuthProvider } from "./Auth/AuthContext.js";
+import ProtectedRoute from "./Auth/ProtectedRoute.js";
+import SignUpPage from "./pages/SignUpPage.js";
+import { ToastContainer } from "react-toastify";
 
 const router = createBrowserRouter([
   {
@@ -12,18 +16,29 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "login",
+        path: "/",
         element: <LoginPage />,
       },
       {
+        path: "/signup",
+        element: <SignUpPage />,
+      },
+      {
         path: "home",
-        element: <Home />,
+        element: (
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
 ]);
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+    <ToastContainer />
   </StrictMode>
 );
