@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Column } from "@/customComponents/Column";
 import type { Task, Column as ColumnType } from "./types";
 import { AuthContext } from "@/Auth/AuthContext";
+import { toast } from "react-toastify";
 
 const COLUMNS: ColumnType[] = [
   { id: "TODO", title: "To Do", color: "bg-red-100" },
@@ -78,8 +79,10 @@ export default function Home() {
       });
       setTasks((prev) => [...prev, response.data.task]);
       setNewTask({ title: "", description: "" });
+      toast.success("Task added successfully!");
     } catch (error) {
       console.error("Error adding task:", error);
+      toast.error("Failed to add task. Please try again.");
     }
   };
 
@@ -103,8 +106,10 @@ export default function Home() {
       );
       setEditingTask(null);
       setOpenDialog(false);
+      toast.success("Task updated successfully!");
     } catch (error) {
-      console.error("Error editing task:", error);
+      console.error("Error updated task:", error);
+      toast.error("Failed to update task. Please try again.");
     }
   };
 
@@ -114,8 +119,10 @@ export default function Home() {
         data: { userEmail },
       });
       setTasks((prev) => prev.filter((task) => task.taskId !== id));
+      toast.success("Task deleted successfully!");
     } catch (error) {
       console.error("Error deleting task:", error);
+      toast.error("Failed to delete task. Please try again.");
     }
   };
 
@@ -134,15 +141,19 @@ export default function Home() {
       setTasks((prev) =>
         prev.map((task) => (task.taskId === taskId ? response.data.task : task))
       );
+      toast.info("Task status updated");
     } catch (error) {
       console.error("Error updating task status:", error);
+      toast.error("Failed to delete task. Please try again.");
     }
   };
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-8 text-center">
-        Task Management System
+        {userEmail
+          ? `${currentUser.displayName}'s ToDoS!`
+          : "Welcome to ToDoS!"}
       </h1>
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogTrigger asChild>
@@ -188,7 +199,7 @@ export default function Home() {
         </DialogContent>
       </Dialog>
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {COLUMNS.map((column) => (
             <Column
               key={column.id}

@@ -5,11 +5,15 @@ import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, GoogleAuthProvider } from "../Auth/firebase.init";
+import { toast } from "react-toastify";
+import axiosInstance from "../Routes/Axios";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const googleProvider = new GoogleAuthProvider();
 
@@ -17,10 +21,11 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      console.log("User logged in successfully!");
+      navigate("/home");
+      toast.success("Logged in successfully!");
     } catch (error: any) {
       console.error("Error logging in:", error.message);
-      alert(error.message);
+      toast.success("Failed to login!");
     }
   };
 
@@ -28,10 +33,21 @@ const LoginPage: React.FC = () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      console.log("Google Sign-In Successful:", user);
+
+      const response = await axiosInstance.post("users/signup", {
+        name: user.displayName || "Unknown",
+        email: user.email || "unknown@example.com",
+      });
+
+      if (response.data.message === "User already exists") {
+        toast.warn("User already exists. Please log in.");
+      } else {
+        navigate("/home");
+        toast.success("Google sign-up successful!");
+      }
     } catch (error: any) {
       console.error("Error during Google Sign-In:", error.message);
-      alert(error.message);
+      toast.error(error.message || "An error occurred during Google sign-up.");
     }
   };
 

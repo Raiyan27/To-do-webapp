@@ -21,7 +21,6 @@ export function Column({
   const { setNodeRef } = useDroppable({
     id: column.id,
   });
-  console.log(tasks);
 
   return (
     <Card ref={setNodeRef} className={`p-4 shadow-lg ${column.color}`}>
