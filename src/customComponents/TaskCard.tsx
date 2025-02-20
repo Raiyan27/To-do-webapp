@@ -18,7 +18,7 @@ export function TaskCard({
 }: TaskCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
-      id: task.id,
+      id: task.taskId,
     });
 
   const style = transform
@@ -35,14 +35,12 @@ export function TaskCard({
       className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md cursor-grab relative"
       style={style}
     >
-      {/* Task Content */}
       <h3 className="font-semibold text-gray-800">{task.title}</h3>
       {task.description && (
         <p className="mt-2 text-sm text-gray-600">{task.description}</p>
       )}
       <p className="mt-2 text-xs text-gray-500">{task.createdAt}</p>
 
-      {/* Buttons */}
       <div
         className={`absolute top-2 right-2 flex gap-2 ${
           isDragging ? "pointer-events-none" : ""
@@ -53,7 +51,6 @@ export function TaskCard({
           size="sm"
           onClick={(e) => {
             e.stopPropagation();
-            console.log("Edit button clicked for task:", task.id);
             setEditingTask(task);
             setOpenDialog(true);
           }}
@@ -65,8 +62,7 @@ export function TaskCard({
           size="sm"
           onClick={(e) => {
             e.stopPropagation();
-            console.log("Deleting task with ID:", task.id);
-            deleteTask(task.id);
+            deleteTask(task.taskId);
           }}
         >
           <TrashIcon className="h-4 w-4 text-red-500" />

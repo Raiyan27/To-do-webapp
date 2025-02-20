@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
+import axiosInstance from "../Routes/Axios";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
   PointerSensor,
@@ -19,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Column } from "@/customComponents/Column";
 import type { Task, Column as ColumnType } from "./types";
+import { AuthContext } from "@/Auth/AuthContext";
 
 const COLUMNS: ColumnType[] = [
   { id: "TODO", title: "To Do", color: "bg-red-100" },
@@ -38,9 +40,26 @@ export default function Home() {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const sensors = useSensors(useSensor(PointerSensor), useSensor(TouchSensor));
+  const { currentUser } = useContext(AuthContext);
+  const userEmail = currentUser?.email;
 
-  const addTask = () => {
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await axiosInstance.get("/tasks/tasks", {
+          params: { userEmail },
+        });
+        setTasks(response.data.tasks);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+    fetchTasks();
+  }, [userEmail]);
+
+  const addTask = async () => {
     if (!newTask.title.trim()) return;
+
     const task: Task = {
       id: Math.random().toString(36).substr(2, 9),
       title: newTask.title.slice(0, 50),
@@ -48,44 +67,76 @@ export default function Home() {
       status: "TODO",
       createdAt: new Date().toLocaleString(),
     };
-    setTasks((prev) => [...prev, task]);
-    setNewTask({ title: "", description: "" });
+
+    try {
+      const response = await axiosInstance.post("/tasks/tasks", {
+        userEmail: userEmail,
+        taskId: task.id,
+        title: task.title,
+        description: task.description,
+        status: task.status,
+      });
+      setTasks((prev) => [...prev, response.data.task]);
+      setNewTask({ title: "", description: "" });
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
   };
 
-  // Edit an existing task
-  const editTask = () => {
+  const editTask = async () => {
     if (!editingTask || !editingTask.title.trim()) return;
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === editingTask.id
-          ? {
-              ...task,
-              title: editingTask.title,
-              description: editingTask.description,
-            }
-          : task
-      )
-    );
-    setEditingTask(null);
-    setOpenDialog(false);
+
+    try {
+      const response = await axiosInstance.put(
+        `/tasks/tasks/${editingTask.taskId}`,
+        {
+          userEmail,
+          title: editingTask.title,
+          description: editingTask.description,
+          status: editingTask.status,
+        }
+      );
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.taskId === editingTask.taskId ? response.data.task : task
+        )
+      );
+      setEditingTask(null);
+      setOpenDialog(false);
+    } catch (error) {
+      console.error("Error editing task:", error);
+    }
   };
 
-  const deleteTask = (id: string) => {
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+  const deleteTask = async (id: string) => {
+    try {
+      await axiosInstance.delete(`/tasks/tasks/${id}`, {
+        data: { userEmail },
+      });
+      setTasks((prev) => prev.filter((task) => task.taskId !== id));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over) return;
 
     const taskId = active.id as string;
     const newStatus = over.id as Task["status"];
 
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === taskId ? { ...task, status: newStatus } : task
-      )
-    );
+    try {
+      const response = await axiosInstance.put(`/tasks/tasks/${taskId}`, {
+        userEmail,
+        status: newStatus,
+      });
+      setTasks((prev) =>
+        prev.map((task) => (task.taskId === taskId ? response.data.task : task))
+      );
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
   };
 
   return (
@@ -93,7 +144,6 @@ export default function Home() {
       <h1 className="text-3xl font-bold mb-8 text-center">
         Task Management System
       </h1>
-
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogTrigger asChild>
           <Button className="mb-8">
@@ -137,7 +187,6 @@ export default function Home() {
           </div>
         </DialogContent>
       </Dialog>
-
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {COLUMNS.map((column) => (

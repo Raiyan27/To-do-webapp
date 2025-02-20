@@ -21,6 +21,7 @@ export function Column({
   const { setNodeRef } = useDroppable({
     id: column.id,
   });
+  console.log(tasks);
 
   return (
     <Card ref={setNodeRef} className={`p-4 shadow-lg ${column.color}`}>
@@ -32,7 +33,7 @@ export function Column({
           {tasks.length > 0 ? (
             tasks.map((task) => (
               <TaskCard
-                key={task.id}
+                key={task.taskId}
                 task={task}
                 deleteTask={deleteTask}
                 setEditingTask={setEditingTask}
