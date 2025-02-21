@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Column } from "@/customComponents/Column";
-import type { Task, Column as ColumnType } from "./types";
+import type { Task, Column as ColumnType } from "./../customComponents/types";
 import { AuthContext } from "@/Auth/AuthContext";
 import { toast } from "react-toastify";
 
@@ -62,6 +62,7 @@ export default function Home() {
     if (!newTask.title.trim()) return;
 
     const task: Task = {
+      taskId: Math.random().toString(36).substr(2, 9),
       id: Math.random().toString(36).substr(2, 9),
       title: newTask.title.slice(0, 50),
       description: newTask.description?.slice(0, 200),

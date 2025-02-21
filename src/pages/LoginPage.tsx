@@ -34,17 +34,13 @@ const LoginPage: React.FC = () => {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
 
-      const response = await axiosInstance.post("users/signup", {
+      await axiosInstance.post("users/signup", {
         name: user.displayName || "Unknown",
         email: user.email || "unknown@example.com",
       });
 
-      if (response.data.message === "User already exists") {
-        toast.warn("User already exists. Please log in.");
-      } else {
-        navigate("/home");
-        toast.success("Google sign-up successful!");
-      }
+      navigate("/home");
+      toast.success("Google sign-up successful!");
     } catch (error: any) {
       console.error("Error during Google Sign-In:", error.message);
       toast.error(error.message || "An error occurred during Google sign-up.");

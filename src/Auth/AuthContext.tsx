@@ -7,7 +7,11 @@ interface AuthContextType {
   loading: boolean;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({
+  currentUser: null,
+  setCurrentUser: () => {},
+  loading: true,
+});
 
 interface AuthProviderProps {
   children: ReactNode;
