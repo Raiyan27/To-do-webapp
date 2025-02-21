@@ -9,7 +9,7 @@ This is a **Task Management Application** where users can **add**, **edit**, **d
 3. [Technologies Used 💻](#technologies-used-)
 4. [Dependencies 📦](#dependencies-)
 5. [Live Links 🌐](#live-links-)
-6. [Installation Steps 🛠️](#installation-steps-)
+6. [Installation Steps 🛠️](#installation-steps-%EF%B8%8F)
 
 
 
