@@ -3,29 +3,55 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  updateProfile,
+} from "firebase/auth";
 import { auth, GoogleAuthProvider } from "../Auth/firebase.init";
-import { toast } from "react-toastify";
 import axiosInstance from "../Routes/Axios";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const LoginPage: React.FC = () => {
+const SignUpPage: React.FC = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [photoURL, setPhotoURL] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const googleProvider = new GoogleAuthProvider();
   const navigate = useNavigate();
 
-  const googleProvider = new GoogleAuthProvider();
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/home");
-      toast.success("Logged in successfully!");
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      await updateProfile(user, {
+        displayName: name,
+        photoURL: photoURL,
+      });
+
+      const response = await axiosInstance.post("/users/signup", {
+        name,
+        email,
+      });
+
+      if (response.data.message === "User already exists") {
+        toast.warn("User already exists. Please log in.");
+      } else {
+        toast.success("Sign up successful!");
+        navigate("/home");
+      }
     } catch (error: any) {
-      console.error("Error logging in:", error.message);
-      toast.success("Failed to login!");
+      console.error("Error signing up:", error.message);
+      toast.error(error.message || "An error occurred during sign-up.");
     }
   };
 
@@ -42,8 +68,8 @@ const LoginPage: React.FC = () => {
       if (response.data.message === "User already exists") {
         toast.warn("User already exists. Please log in.");
       } else {
-        navigate("/home");
         toast.success("Google sign-up successful!");
+        navigate("/home");
       }
     } catch (error: any) {
       console.error("Error during Google Sign-In:", error.message);
@@ -54,8 +80,19 @@ const LoginPage: React.FC = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center">Login</h1>
-        <form onSubmit={handleLogin} className="space-y-4">
+        <h1 className="text-2xl font-bold text-center">Sign Up</h1>
+        <form onSubmit={handleSignUp} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              type="text"
+              placeholder="Enter your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -91,8 +128,18 @@ const LoginPage: React.FC = () => {
               </button>
             </div>
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="photoURL">Photo URL</Label>
+            <Input
+              id="photoURL"
+              type="url"
+              placeholder="Enter your photo URL"
+              value={photoURL}
+              onChange={(e) => setPhotoURL(e.target.value)}
+            />
+          </div>
           <Button type="submit" className="w-full">
-            Login
+            Sign Up
           </Button>
         </form>
         <Button
@@ -100,12 +147,12 @@ const LoginPage: React.FC = () => {
           className="w-full"
           onClick={handleGoogleSignUp}
         >
-          Sign up with Google
+          Sign Up with Google
         </Button>
         <h2 className="text-center">
-          Don't have an account?{" "}
-          <Link className="text-blue-500" to="signup">
-            SignUp
+          Already have an account?{" "}
+          <Link className="text-blue-500" to="/">
+            Login
           </Link>
         </h2>
       </div>
@@ -113,4 +160,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default SignUpPage;
