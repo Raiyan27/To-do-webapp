@@ -1,50 +1,119 @@
-# React + TypeScript + Vite
+# Task Management Application 📋
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview 🚀
+This is a **Task Management Application** where users can **add**, **edit**, **delete**, and **reorder** tasks using a drag-and-drop interface. Tasks are categorized into three sections: **To-Do**, **In Progress**, and **Done**. The app ensures real-time synchronization of tasks and maintains persistence by saving changes instantly to the database.
 
-Currently, two official plugins are available:
+## Table of Contents 📑
+1. [Overview 🚀](#overview-)
+2. [Key Features & Requirements 📝](#key-features--requirements-)
+3. [Technologies Used 💻](#technologies-used-)
+4. [Dependencies 📦](#dependencies-)
+5. [Live Links 🌐](#live-links-)
+6. [Installation Steps 🛠️](#installation-steps-%EF%B8%8F)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Key Features & Requirements 📝:
 
-- Configure the top-level `parserOptions` property like this:
+#### 1. **Authentication 🔐**:
+- Only **authenticated** users can access the app.
+- **[Firebase Authentication (Google Sign-In)](https://firebase.google.com/docs/auth)** is used.
+- User details (**User ID**, **email**, and **display name**) are stored in the database upon first login.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+#### 2. **Task Management System 🛠️**:
+- Users can **add**, **edit**, **delete**, and **reorder** tasks.
+- Tasks are categorized into:
+  - **To-Do**
+  - **In Progress**
+  - **Done**
+- **[Drag-and-drop](https://react-beautiful-dnd.netlify.app/)** functionality is provided for task reordering.
+- Real-time updates via **WebSockets** to reflect changes instantly.
+
+#### 3. **Database & Persistence 🗄️**:
+- Tasks are stored in **[MongoDB](https://www.mongodb.com/)**.
+- **Real-time syncing** is enabled with
+
+#### 4. **Frontend UI 🎨**:
+- Built with **[React.js](https://reactjs.org/)** and **[Vite](https://vitejs.dev/)** for a fast, modern UI.
+- **[Tailwind CSS](https://tailwindcss.com/)** is used for a clean, responsive design.
+- **Drag-and-drop** functionality is implemented using **@dnd-kit/core**.
+- Fully **responsive UI** optimized for both desktop and mobile devices.
+
+#### 5. **Backend API 🔌**:
+- RESTful **[Express.js](https://expressjs.com/)** API handles task management.
+- API Endpoints:
+  - `POST /tasks`: Add a new task.
+  - `GET /tasks`: Retrieve tasks for the logged-in user.
+  - `PUT /tasks/:id`: Update a task.
+  - `DELETE /tasks/:id`: Delete a task.
+
+#### 6. **Real-time Synchronization ⚡**:
+- Real-time task updates are handled via **WebSocket** or **MongoDB Change Streams**.
+- **Optimistic UI** updates ensure a smooth experience, even with network delays.
+
+## Technologies Used 💻
+This project uses the following technologies:
+
+### Frontend 🖥️:
+- **[React.js](https://reactjs.org/)** (with TypeScript): For building the interactive user interface. ![React](https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=white)
+- **[Tailwind CSS](https://tailwindcss.com/)**: For styling and creating a responsive, clean, and minimal UI. ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?logo=tailwindcss&logoColor=white)
+- **[Firebase](https://firebase.google.com/)**: For handling user authentication (Google Sign-In). ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?logo=firebase&logoColor=black)
+
+- **[Axios](https://axios-http.com/)**: For making API requests to the backend. ![Axios](https://img.shields.io/badge/Axios-5A29E0?logo=axios&logoColor=white)
+
+### Backend 🧑‍💻:
+- **[Node.js](https://nodejs.org/)**: JavaScript runtime for the server-side. ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)
+- **[Express.js](https://expressjs.com/)**: Framework for building the RESTful API to handle CRUD operations for tasks. ![Express.js](https://img.shields.io/badge/Express.js-000000?logo=express&logoColor=white)
+- **[MongoDB](https://www.mongodb.com/)**: Database for storing tasks with persistence. ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white)
+- **[Socket.io](https://socket.io/)**: For real-time synchronization of tasks between the frontend and backend. ![Socket.io](https://img.shields.io/badge/Socket.io-010101?logo=socket-dot-io&logoColor=white)
+
+## Dependencies 📦
+The project has the following dependencies:
+
+```json
+"dependencies": {
+  "@dnd-kit/core": "^6.3.1",
+  "@radix-ui/react-dialog": "^1.1.6",
+  "@radix-ui/react-label": "^2.1.2",
+  "@radix-ui/react-slot": "^1.1.2",
+  "axios": "^1.7.9",
+  "class-variance-authority": "^0.7.1",
+  "clsx": "^2.1.1",
+  "firebase": "^11.3.1",
+  "lucide-react": "^0.475.0",
+  "react": "^19.0.0",
+  "react-dom": "^19.0.0",
+  "react-router-dom": "^6.29.0",
+  "react-toastify": "^11.0.3",
+  "tailwind-merge": "^3.0.1",
+  "tailwindcss-animate": "^1.0.7"
+}
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Live Links 🌐
+- **Frontend URL**: [https://your-frontend-link.com](https://basic-todos-app.surge.sh) 🌍
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Installation Steps 🛠️
+To run this project locally, follow the steps below:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+### Prerequisites ⚙️
+Ensure you have the following installed:
+- **[Node.js](https://nodejs.org/)**: [Install Node.js](https://nodejs.org/)
+- **[MongoDB](https://www.mongodb.com/)**: [Install MongoDB](https://www.mongodb.com/try/download/community) or use [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) for cloud hosting.
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/raiyan27/To-do-webapp
+cd To-do-webapp
 ```
+### 2. Install all the dependencies 
+```
+npm install
+```
+### 3. Run the app
+```
+npm run dev
+```
+
+
+
