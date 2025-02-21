@@ -96,7 +96,7 @@ const LoginPage: React.FC = () => {
           className="w-full"
           onClick={handleGoogleSignUp}
         >
-          Sign up with Google
+          Login with Google
         </Button>
         <h2 className="text-center">
           Don't have an account?{" "}
