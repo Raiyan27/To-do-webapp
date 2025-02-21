@@ -1,16 +1,23 @@
-# Task Management Application 📋
+# ToDoS! 📋
 
 ## Overview 🚀
-This is a **Task Management Application** where users can **add**, **edit**, **delete**, and **reorder** tasks using a drag-and-drop interface. Tasks are categorized into three sections: **To-Do**, **In Progress**, and **Done**. The app ensures real-time synchronization of tasks and maintains persistence by saving changes instantly to the database.
+This is a **To-do Application** where users can **add**, **edit**, **delete**, and **reorder** tasks using a drag-and-drop interface. Tasks are categorized into three sections: **To-Do**, **In Progress**, and **Done**. The app ensures real-time synchronization of tasks and maintains persistence by saving changes instantly to the database.
 
 ## Table of Contents 📑
 1. [Overview 🚀](#overview-)
 2. [Key Features & Requirements 📝](#key-features--requirements-)
-3. [Technologies Used 💻](#technologies-used-)
-4. [Dependencies 📦](#dependencies-)
-5. [Live Links 🌐](#live-links-)
-6. [Installation Steps 🛠️](#installation-steps-%EF%B8%8F)
+3. [App Screenshots 📸](#app-screenshots-)
+4. [Technologies Used 💻](#technologies-used-)
+5. [Dependencies 📦](#dependencies-)
+6. [Live Links 🌐](#live-links-)
+7. [Installation Steps 🛠️](#installation-steps-%EF%B8%8F)
 
+
+## App Screenshots 📸
+
+![App Screenshot 1](https://i.ibb.co.com/HDt66W00/todos-app-home.png)
+
+Feel free to explore the app live using the links provided above. 🎉
 
 
 ### Key Features & Requirements 📝:
