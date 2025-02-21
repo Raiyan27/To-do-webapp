@@ -2,6 +2,7 @@ import { useDraggable } from "@dnd-kit/core";
 import { TrashIcon, PencilIcon, GripVerticalIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Task } from "./types";
+import { useEffect, useState } from "react";
 
 type TaskCardProps = {
   task: Task;
@@ -29,6 +30,42 @@ export function TaskCard({
     minute: "2-digit",
   });
 
+  const [isNearEdge, setIsNearEdge] = useState(false);
+
+  const checkEdgeProximity = (event: TouchEvent) => {
+    const touch = event.touches[0];
+    const screenHeight = window.innerHeight;
+
+    const topThreshold = 100;
+    const bottomThreshold = 100;
+
+    if (
+      touch.clientY < topThreshold ||
+      touch.clientY > screenHeight - bottomThreshold
+    ) {
+      setIsNearEdge(true);
+    } else {
+      setIsNearEdge(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      document.body.style.touchAction = "none";
+      window.addEventListener("touchmove", checkEdgeProximity, {
+        passive: false,
+      });
+    } else {
+      document.body.style.touchAction = "";
+      window.removeEventListener("touchmove", checkEdgeProximity);
+    }
+
+    return () => {
+      document.body.style.touchAction = "";
+      window.removeEventListener("touchmove", checkEdgeProximity);
+    };
+  }, [isDragging]);
+
   const style = transform
     ? {
         transform: `translate(${transform.x}px, ${transform.y}px)`,
@@ -41,7 +78,9 @@ export function TaskCard({
       className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md relative"
       style={{
         ...style,
-        opacity: isDragging ? 0.7 : 1,
+        touchAction: isNearEdge ? "auto" : "none",
+        opacity: isDragging ? 0.5 : 1,
+        cursor: isDragging ? "grabbing" : "grab",
       }}
     >
       <h3 className="font-semibold text-gray-800">{task.title}</h3>

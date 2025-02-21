@@ -109,6 +109,7 @@ export default function Home() {
       setOpenDialog(false);
       toast.success("Task updated successfully!");
     } catch (error) {
+      setEditingTask(null);
       console.error("Error updated task:", error);
       toast.error("Failed to update task. Please try again.");
     }
@@ -156,7 +157,15 @@ export default function Home() {
           ? `${currentUser.displayName}'s ToDoS!`
           : "Welcome to ToDoS!"}
       </h1>
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+      <Dialog
+        open={openDialog}
+        onOpenChange={(open) => {
+          setOpenDialog(open);
+          if (!open) {
+            setEditingTask(null);
+          }
+        }}
+      >
         <DialogTrigger asChild>
           <Button className="mb-8">
             <PlusIcon className="mr-2 h-4 w-4" />

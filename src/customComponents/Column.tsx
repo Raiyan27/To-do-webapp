@@ -18,14 +18,25 @@ export function Column({
   setEditingTask,
   setOpenDialog,
 }: ColumnProps) {
-  const { setNodeRef } = useDroppable({
+  const { setNodeRef, isOver } = useDroppable({
     id: column.id,
   });
 
+  const columnStyle = {
+    border: isOver ? "2px dashed #007bff" : "1px solid #ddd",
+    padding: "16px",
+    borderRadius: "8px",
+    minHeight: "100px",
+    transition: "background-color 0.2s, border 0.2s",
+  };
   return (
-    <Card ref={setNodeRef} className={`p-4 shadow-lg ${column.color}`}>
+    <Card
+      ref={setNodeRef}
+      style={columnStyle}
+      className={`p-4 shadow-lg ${column.color}`}
+    >
       <CardHeader>
-        <CardTitle className="capitalize">{column.title}</CardTitle>
+        <CardTitle className="capitalize text-center">{column.title}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">

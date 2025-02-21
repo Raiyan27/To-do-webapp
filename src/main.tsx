@@ -9,6 +9,7 @@ import { AuthProvider } from "./Auth/AuthContext.js";
 import ProtectedRoute from "./Auth/ProtectedRoute.js";
 import SignUpPage from "./pages/SignUpPage.js";
 import { ToastContainer } from "react-toastify";
+import PublicRoute from "./Auth/PublicRoute.js";
 
 const router = createBrowserRouter([
   {
@@ -17,11 +18,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <LoginPage />,
+        element: (
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        ),
       },
       {
         path: "/signup",
-        element: <SignUpPage />,
+        element: (
+          <PublicRoute>
+            <SignUpPage />
+          </PublicRoute>
+        ),
       },
       {
         path: "home",
